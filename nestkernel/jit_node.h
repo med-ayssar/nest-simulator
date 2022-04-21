@@ -88,7 +88,7 @@ public:
 
   void init();
 
-  void calibrate();
+  void pre_run_hook();
 
   void calibrate_time( const TimeConverter& );
 
