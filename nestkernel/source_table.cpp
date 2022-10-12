@@ -335,9 +335,10 @@ nest::SourceTable::populate_target_data_fields_( const SourceTablePosition& curr
     {
       // WARNING: we set the tid field here to zero just to make sure
       // it has a defined value; however, this value is _not_ used
-      // anywhere when using compressed spikes
+      // anywhere when using compressed spikesz
       target_fields.set_tid( 0 );
-      auto it_idx = compressed_spike_data_map_.at( current_position.tid )
+        LOG( M_INFO, "READ",  "r_thread " + std::to_string( current_position.tid )  );
+      auto it_idx = compressed_spike_data_map_.at(  current_position.tid )
                       .at( current_position.syn_id )
                       .find( current_source.get_node_id() );
       if ( it_idx != compressed_spike_data_map_.at( current_position.tid ).at( current_position.syn_id ).end() )
@@ -525,7 +526,7 @@ nest::SourceTable::fill_compressed_spike_data(
           // this source; this tries to balance memory usage of this
           // data structure across threads
           const thread responsible_tid = sender_gid % kernel().vp_manager.get_num_threads();
-
+            LOG( M_INFO, "WRITE",  "w_thread " + std::to_string( responsible_tid)  );
           compressed_spike_data_map_[ responsible_tid ][ syn_id ].insert(
             std::make_pair( it->first, compressed_spike_data[ syn_id ].size() ) );
 
