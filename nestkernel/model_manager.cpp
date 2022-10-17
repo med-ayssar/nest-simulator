@@ -131,12 +131,13 @@ ModelManager::initialize()
     }
   }
   // temporary fix for issue #2492 until PR #2502 is completed!
-  create_secondary_events_prototypes();
+  // create_secondary_events_prototypes();
 }
 
 void
 ModelManager::finalize()
 {
+  create_secondary_events_prototypes();
   clear_node_models_();
   clear_connection_models_();
   delete_secondary_events_prototypes();
@@ -294,6 +295,7 @@ ModelManager::copy_connection_model_( index old_id, Name new_name )
   synapsedict_->insert( new_name, new_id );
 
   kernel().connection_manager.resize_connections();
+
   return new_id;
 }
 
