@@ -349,6 +349,9 @@ ModelsModule::init( SLIInterpreter* )
     "rate_connection_delayed", RegisterConnectionModelFlags::HAS_DELAY );
   register_secondary_connection_model< DiffusionConnection >(
     "diffusion_connection", RegisterConnectionModelFlags::SUPPORTS_WFR );
+
+  // temporary fix for issue #2492 until PR #2502 is completed!
+  kernel().model_manager.create_secondary_events_prototypes();
 }
 
 } // namespace nest
