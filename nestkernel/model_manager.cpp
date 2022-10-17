@@ -130,6 +130,8 @@ ModelManager::initialize()
       synapsedict_->insert( name, connection_models_[ 0 ].size() - 1 );
     }
   }
+  // temporary fix for issue #2492 until PR #2502 is completed!
+  create_secondary_events_prototypes();
 }
 
 void
