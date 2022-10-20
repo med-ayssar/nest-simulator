@@ -337,8 +337,8 @@ nest::SourceTable::populate_target_data_fields_( const SourceTablePosition& curr
       // it has a defined value; however, this value is _not_ used
       // anywhere when using compressed spikesz
       target_fields.set_tid( 0 );
-        LOG( M_INFO, "READ",  "r_thread " + std::to_string( current_position.tid )  );
-      auto it_idx = compressed_spike_data_map_.at(  current_position.tid )
+      LOG( M_INFO, "READ", "r_thread " + std::to_string( current_position.tid ) );
+      auto it_idx = compressed_spike_data_map_.at( current_position.tid )
                       .at( current_position.syn_id )
                       .find( current_source.get_node_id() );
       if ( it_idx != compressed_spike_data_map_.at( current_position.tid ).at( current_position.syn_id ).end() )
@@ -502,47 +502,44 @@ nest::SourceTable::fill_compressed_spike_data(
   // vector with spike data containing information about all process
   // local targets
 
-  for ( synindex syn_id = 0; syn_id < kernel().model_manager.get_num_connection_models() ; ++syn_id )
+  for ( synindex syn_id = 0; syn_id < kernel().model_manager.get_num_connection_models(); ++syn_id )
   {
-  	std::map< index, size_t > temp_map;
+    std::map< index, size_t > temp_map;
 
-  	for ( thread tid = 0; tid < static_cast< thread >( compressible_sources_.size() ); ++tid )
-  	{
-    	for ( auto it = compressible_sources_[ tid ][ syn_id ].begin();
-                 it != compressible_sources_[ tid ][ syn_id ].end();
-                 ++it )
+    for ( thread tid = 0; tid < static_cast< thread >( compressible_sources_.size() ); ++tid )
+    {
+      for ( auto it = compressible_sources_[ tid ][ syn_id ].begin();
+            it != compressible_sources_[ tid ][ syn_id ].end();
+            ++it )
       {
-      	const auto sender_gid = it->first;
+        const auto sender_gid = it->first;
 
-      	if ( temp_map.find( sender_gid ) == temp_map.end() )
-      	{
-      		std::vector< SpikeData > spike_data( kernel().vp_manager.get_num_threads(),
-      				                                 SpikeData( invalid_targetindex, invalid_synindex, invalid_lcid, 0 ) );
-      		temp_map[ sender_gid ] = compressed_spike_data[ syn_id ].size();
+        if ( temp_map.find( sender_gid ) == temp_map.end() )
+        {
+          std::vector< SpikeData > spike_data( kernel().vp_manager.get_num_threads(),
+            SpikeData( invalid_targetindex, invalid_synindex, invalid_lcid, 0 ) );
+          temp_map[ sender_gid ] = compressed_spike_data[ syn_id ].size();
 
           // WARNING: store source-node-id -> process-global-synapse
           // association in compressed_spike_data_map on a
           // pseudo-randomly selected thread which houses targets for
           // this source; this tries to balance memory usage of this
           // data structure across threads
-          const thread responsible_tid = sender_gid % kernel().vp_manager.get_num_threads();
-            LOG( M_INFO, "WRITE",  "w_thread " + std::to_string( responsible_tid)  );
+          const thread responsible_tid = tid; // sender_gid % kernel().vp_manager.get_num_threads();
+          LOG( M_INFO, "WRITE", "w_thread " + std::to_string( responsible_tid ) );
           compressed_spike_data_map_[ responsible_tid ][ syn_id ].insert(
             std::make_pair( it->first, compressed_spike_data[ syn_id ].size() ) );
 
           compressed_spike_data[ syn_id ].push_back( spike_data );
-      	}
+        }
 
-      	const auto map_entry = temp_map.find( sender_gid );
-      	assert( compressed_spike_data[ syn_id ][ map_entry->second ][ tid ].get_lcid() == invalid_lcid );
-      	compressed_spike_data[ syn_id ][ map_entry->second ][ tid ] = it->second;
+        const auto map_entry = temp_map.find( sender_gid );
+        assert( compressed_spike_data[ syn_id ][ map_entry->second ][ tid ].get_lcid() == invalid_lcid );
+        compressed_spike_data[ syn_id ][ map_entry->second ][ tid ] = it->second;
 
       } // for it
 
-    	compressible_sources_[ tid ][ syn_id ].clear();
-    }  // for tid
-  }  // for syn_id
+      compressible_sources_[ tid ][ syn_id ].clear();
+    } // for tid
+  }   // for syn_id
 }
-
-
-
