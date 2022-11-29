@@ -127,7 +127,7 @@ Run with MPI
 
 If NEST was compiled with support for :ref:`distributed computing via
 MPI <distributed_computing>`, it will usually execute the exact same
-simulation script on each of the :hxt_ref:`MPI`processes. With NEST Server, this
+simulation script on each of the :hxt_ref:`MPI` processes. With NEST Server, this
 would normally mean that one NEST Server instance would be spawned for
 each rank in a multi-process NEST simulation. To prevent this from
 happening, we provide a special version of the NEST Server command for
