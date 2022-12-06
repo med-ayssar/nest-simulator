@@ -192,6 +192,7 @@ else
     echo "  Running MPI tests .. no (compiled without MPI support)"
 fi
 if test -n "${MUSIC}"; then
+    echo $MUSIC
     MUSIC_VERSION="$("${MUSIC}" --version | head -n1 | cut -d' ' -f2)"
     echo "  MUSIC executable ... $MUSIC (version $MUSIC_VERSION)"
 fi
