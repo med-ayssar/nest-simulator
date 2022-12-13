@@ -433,7 +433,7 @@ private:
   bool decrease_buffer_size_spike_data_;
 
   PerThreadBoolIndicator gather_completed_checker_;
-
+  int mpi_rounds_counter = 0;
 #ifdef TIMER_DETAILED
   // private stop watches for benchmarking purposes
   // (intended for internal core developers, not for use in the public API)

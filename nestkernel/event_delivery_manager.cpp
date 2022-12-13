@@ -334,6 +334,7 @@ EventDeliveryManager::gather_spike_data_( const thread tid,
   std::vector< SpikeDataT >& send_buffer,
   std::vector< SpikeDataT >& recv_buffer )
 {
+  mpi_rounds_counter = 0;
   // Assume all threads have some work to do
   gather_completed_checker_[ tid ].set_false();
   assert( gather_completed_checker_.all_false() );
@@ -354,6 +355,7 @@ EventDeliveryManager::gather_spike_data_( const thread tid,
 
 #pragma omp single
     {
+      mpi_rounds_counter++;
       if ( kernel().mpi_manager.adaptive_spike_buffers() and buffer_size_spike_data_has_changed_ )
       {
         resize_send_recv_buffers_spike_data_();
@@ -459,6 +461,9 @@ EventDeliveryManager::gather_spike_data_( const thread tid,
   } // of omp single; implicit barrier
 
   reset_spike_register_( tid );
+  LOG( M_INFO,
+    "EventDeliveryManager::gather_spike_data",
+    "mpi_rounds_count_in_single_update: " + std::to_string( mpi_rounds_counter ) );
 }
 
 template < typename TargetT, typename SpikeDataT >
