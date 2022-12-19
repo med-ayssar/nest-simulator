@@ -140,35 +140,23 @@ nest::SparseNodeArray::get_node_by_node_id( index node_id ) const
     return nullptr;
   }
 
-  /* Find base index and node ID for estimating location of desired node in array.
-   *
-   * In the expression for base_id, split_node_id_ will only be used if we are on the
-   * right side, when the value is well-defined.
-   */
-  const bool left_side = node_id < split_node_id_;
-  const double scale = left_side ? left_scale_ : right_scale_;
-  const size_t base_idx = left_side ? 0 : split_idx_;
-  const index base_id = left_side ? local_min_node_id_ : split_node_id_;
+  size_t step = kernel().vp_manager.get_num_virtual_processes();
+  size_t root = nodes_[ 0 ].node_id_;
 
-  // estimate index, limit to array size for safety size
-  auto idx =
-    std::min( static_cast< size_t >( base_idx + std::floor( scale * ( node_id - base_id ) ) ), nodes_.size() - 1 );
+  size_t b = node_id - root;
+  size_t a = std::ceil( b / step );
 
-  // search left if necessary
-  while ( 0 < idx and node_id < nodes_[ idx ].node_id_ )
+  size_t upperBound = std::min( b, nodes_.size() - 1 ) + 1;
+  size_t lowerBound = std::min( a, nodes_.size() - 1 );
+
+  auto lower = std::lower_bound( nodes_.begin() + lowerBound,
+    nodes_.begin() + upperBound,
+    node_id,
+    []( const NodeEntry& a, const size_t value ) { return a.get_node_id() < value; } );
+
+  if ( ( lower != nodes_.begin() + upperBound ) && lower->node_id_ == node_id )
   {
-    --idx;
-  }
-
-  // search right if necessary
-  while ( idx < nodes_.size() and nodes_[ idx ].node_id_ < node_id )
-  {
-    ++idx;
-  }
-
-  if ( idx < nodes_.size() and nodes_[ idx ].node_id_ == node_id )
-  {
-    return nodes_[ idx ].node_;
+    return lower->get_node();
   }
   else
   {
