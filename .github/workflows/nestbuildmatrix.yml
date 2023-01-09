@@ -8,6 +8,9 @@ env:
   PYTHONPATH: ${{ github.workspace }}/build/python
 on: [push, pull_request]
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   static_checks:
