@@ -22,5 +22,5 @@ install( PROGRAMS
     nest-server-mpi
     ${PROJECT_BINARY_DIR}/bin/nest-config
     ${PROJECT_BINARY_DIR}/bin/nest_vars.sh
-    DESTINATION ${CMAKE_INSTALL_BINDIR}
+     DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
