@@ -681,14 +681,16 @@ NodeCollection::set_metadata( NodeCollectionMetadataPTR )
 inline size_t
 NodeCollection::get_first() const
 {
-  return ( *begin() ).node_id;
+  return begin()->node_id;
 }
 
 inline size_t
 NodeCollection::get_last() const
 {
   size_t offset = size() - 1;
-  return ( *( begin() + offset ) ).node_id;
+  auto last_pos = begin() + offset; 
+
+  return last_pos->node_id;
 }
 
 
