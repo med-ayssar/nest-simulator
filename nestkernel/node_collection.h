@@ -689,7 +689,6 @@ NodeCollection::get_last() const
 {
   size_t offset = size() - 1;
   auto last_pos = begin() + offset; 
-
   return last_pos->node_id;
 }
 
