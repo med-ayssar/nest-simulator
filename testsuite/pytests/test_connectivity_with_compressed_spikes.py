@@ -29,6 +29,9 @@ import pytest
 Testing disconnection of connections with compressd spikes, toggled on/off, using a random edge order.
 """
 
+def get_conn_pairs():
+    conns = nest.GetConnections()
+    return set(zip(conns.sources(), conns.targets()))
 
 @pytest.mark.parametrize("with_compressed_spikes", [False, True])
 @pytest.mark.parametrize("n_nodes", [5, 10, 13, 42])
@@ -45,9 +48,16 @@ def test_disconnect_one_by_one(with_compressed_spikes, n_nodes):
     pairs = [(i, j) for i in range(1, n_nodes + 1) for j in range(1, n_nodes + 1)]
     random.shuffle(pairs)
 
+    pre_conns = get_conn_pairs()
     for i, j in pairs:
         nest.Disconnect(n[i - 1], n[j - 1])
 
+        post_conns = get_conn_pairs()
+        
+        # must pass tuple with single tuple-element to set() to get one-element set of tuples instead of two-element set of node ids.
+        assert pre_conns - post_conns == set(((i, j), ))
+
+        pre_conns = post_conns
 
 @pytest.mark.parametrize("with_compressed_spikes", [False, True])
 @pytest.mark.parametrize("n_nodes", [5, 10, 13, 42])
