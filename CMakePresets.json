@@ -105,6 +105,35 @@
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/docs/install",
         "with-userdoc": "ON"
       }
+    },
+    {
+      "name": "clang",
+      "displayName": "Clang",
+      "description": "Optimized build using Clang/Clang++",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/clang/install",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "with-optimize": "ON",
+        "with-debug": "OFF",
+        "with-mpi": "OFF",
+        "with-boost": "/home/linuxbrew/.linuxbrew/opt/boost"
+      }
+    },
+    {
+      "name": "clang-debug",
+      "displayName": "Clang Debug",
+      "description": "Debug build using Clang/Clang++",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/clang-debug/install",
+        "CMAKE_C_COMPILER": "/home/linuxbrew/.linuxbrew/opt/llvm/bin/clang",
+        "CMAKE_CXX_COMPILER": "/home/linuxbrew/.linuxbrew/opt/llvm/bin/clang++",
+        "with-optimize": "OFF",
+        "with-debug": "ON",
+        "with-mpi": "OFF"
+      }
     }
   ],
   "buildPresets": [
@@ -137,6 +166,16 @@
       "name": "minimal",
       "displayName": "Minimal",
       "configurePreset": "minimal"
+    },
+    {
+      "name": "clang",
+      "displayName": "Clang",
+      "configurePreset": "clang"
+    },
+    {
+      "name": "clang-debug",
+      "displayName": "Clang Debug",
+      "configurePreset": "clang-debug"
     }
   ]
 }
